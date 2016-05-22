@@ -1,29 +1,27 @@
-import { Router, history } from 'backbone';
-import User from './models/User';
-import { UserCard } from './views';
-import $ from 'jquery';
-window.$ = $;
+//import { Router, history } from 'backbone';
+//import User from './models/User';
+import { RegisterPopupView } from './views';
 
-function showUser(id) {
-    if(id) {
-        const $el = $('#content');
-        const currentUser = new User({id});
-        const view = new Usercard({model:currentUser});
-        currentUser.fetch();
-        view.render();
-        currentUser.on('change', () => view.render());
-        $el.append(view.render());
-    }
-}
-const AppRouter = Router.extend({
+console.log('here');
+/*const AppRouter = Router.extend({
     routes: {
-        'user/:id': 'showUser',
-        'album/:id': 'showAlbum',
-        'photo/:id': 'showPhoto',
-        'userlist': 'showUserList',
-    },
-    showUser
-});
 
+    },
+
+});*/
+const showRegisterPopup = () => {
+    const $el = $('body');
+    const popup = new RegisterPopupView().$el;
+   // console.log(view);
+    $el.append(popup);
+
+}
+const registerBtn = document.querySelector('.js-show-register-popup');
+console.log(registerBtn);
+registerBtn.addEventListener('click', () => {
+    console.log(11);
+    showRegisterPopup();
+})
+/*
 const app = new AppRouter();
-window.addEventListener('load', () => history.start());
+window.addEventListener('load', () => history.start());*/

@@ -1,4 +1,4 @@
-
+var webpack = require("webpack");
 module.exports = {
   // context: __dirname + "/app",
   devtool: 'inline-source-map',
@@ -31,4 +31,7 @@ module.exports = {
     ],
   },
   watch: true,
+  externals: {
+    "jquery": "jQuery"
+  }
 };

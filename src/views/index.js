@@ -1,1 +1,1 @@
-export UserCard from "./UserCard/UserCard";
+export RegisterPopupView from "./RegisterPopup/popup.js";
