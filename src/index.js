@@ -1,15 +1,21 @@
-//import { Router, history } from 'backbone';
+import { Router, history } from 'backbone';
 //import User from './models/User';
-import { RegisterPopupView } from './views';
-
-console.log('here');
-/*const AppRouter = Router.extend({
+//import { RegisterPopupView } from './views';
+import { LoginView } from './views';
+console.log('index.js');
+const AppRouter = Router.extend({
     routes: {
-
+        "login": "showLoginPage",
     },
 
-});*/
-const showRegisterPopup = () => {
+    showLoginPage: function() {
+        const $el = $('#page');
+        const view = new LoginView();
+        console.log('view', view);
+        $el.append(view.render());
+    }
+});
+/*const showRegisterPopup = () => {
     const $el = $('body');
     const popup = new RegisterPopupView().$el;
    // console.log(view);
@@ -21,7 +27,7 @@ console.log(registerBtn);
 registerBtn.addEventListener('click', () => {
     console.log(11);
     showRegisterPopup();
-})
-/*
+})*/
+
 const app = new AppRouter();
-window.addEventListener('load', () => history.start());*/
+window.addEventListener('load', () => history.start());

@@ -1,6 +1,5 @@
 import { View } from 'backbone';
 import {validateEmail, validatePassword} from '../../helpers/form';
-import template from 'lodash/template';
 //import _style from '../../helpers/localStyles'
 //import indexOf from 'lodash';
 import $ from 'jquery';
@@ -11,8 +10,13 @@ const popupTemplate = PopupHTML;
 
 const RegisterPopupView = View.extend({
     tagName: "div",
-    template: template(popupTemplate),
+    template: popupTemplate,
     initialize: function () {
+        this.promise = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+        // console.log("resole, reject",this.resolve, this.reject);
         this.render();
         this.timeoutId = null;
         this.errors = [];
@@ -25,6 +29,7 @@ const RegisterPopupView = View.extend({
         "input input.form-control": "onChange"
     },
     onChange: function (e) {
+        this.resolve('user');
         if (this.timeoutId) {
             clearTimeout(this.timeoutId)
         }
@@ -53,8 +58,8 @@ const RegisterPopupView = View.extend({
 
     },
     render: function () {
-        //this.$el.html(this.template);
-        this.template(this.errors);
+        this.$el.html(this.template);
+        //this.template(this.errors);
         return this.$el;
     },
 });
