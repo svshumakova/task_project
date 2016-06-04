@@ -1,11 +1,12 @@
 import { View } from 'backbone';
-import {validateEmail, validatePassword} from '../../helpers/form';
+import {validateEmail, validatePassword, validationErrors} from '../../helpers/form';
 //import _style from '../../helpers/localStyles'
-//import indexOf from 'lodash';
+import forEach from 'lodash/forEach';
+import find from 'lodash/find';
+import every from 'lodash/every';
 import $ from 'jquery';
 import PopupHTML from "./popup.html";
 window.$ = $;
-console.log(validateEmail, validatePassword);
 const popupTemplate = PopupHTML;
 
 const RegisterPopupView = View.extend({
@@ -16,50 +17,86 @@ const RegisterPopupView = View.extend({
             this.resolve = resolve;
             this.reject = reject;
         });
-        // console.log("resole, reject",this.resolve, this.reject);
         this.render();
         this.timeoutId = null;
-        this.errors = [];
+        this.errors = {};
     },
-    validate: function () {
+    /*validate: function (formData) {
 
-    },
+    },*/
     events: {
         "submit .js-register-form": "register",
         "input input.form-control": "onChange"
     },
+    setErrors: function() {
+        const form = this.$el.find('form');
+        const errors = form.find('[data-error]');
+        forEach(this.errors, (errorText, errorName) => {
+            console.log(form.find('[data-error]'), errorName);
+            const errorEl = errors.filter(function(index){
+                return $(this).attr('data-error') === errorName;
+            });
+            console.log(errorEl, errorName, errorText);
+            errorEl.text(errorText);
+        });
+    },
     onChange: function (e) {
-        this.resolve('user');
         if (this.timeoutId) {
             clearTimeout(this.timeoutId)
         }
         const self = this;
         this.timeoutId = setTimeout(function () {
             const form = self.$el.find('form');
-            let formFields = form.serializeArray();
-            const fromObj = {};
-            formFields.forEach((item) => {
-                fromObj[item.name] = item.value;
-            });
+            const formData = form.serializeArray()
+            const currentField = $(e.target);
+            const val = currentField.val();
+            const fieldName = currentField.attr('name');
 
-            this.errors.email = !validateEmail(formFields.email) ? 'Email is not valid' : '';
-            this.errors.password1 = !validateEmail(formFields.password1) ? 'Password should contain at least 1 number and has length 6 characters' : '';
-            this.errors.password2 = !validateEmail(formFields.password2) ? 'Password should contain at least 1 number and has length 6 characters' : '';
+            switch(fieldName) {
+                case 'email':
+                    self.errors[fieldName] = validateEmail(val) ? '' : validationErrors.email;
+                    break;
+                case 'password1':
+                case 'password2':
+                    self.errors[fieldName] = validatePassword(val) ? '' : validationErrors.password;
+                    const pass1 = find(formData, {name: 'password1'}).value;
+                    const pass2 = find(formData, {name: 'password2'}).value;
+                    self.errors.general = pass1 && pass2 && pass1 !== pass2 ? validationErrors.passwordsMatch : '';
+                    break;
+            }
 
-            const pass1 = formFields.password1.value;
-            const pass2 = formFields.password2.value;
-            this.errors.general = (pass1 && pass2 && (pass1 !== pass2)) ? 'Passwords don\'t match' : '';
-
+            self.setErrors();
+            self.canBeSubmitted();
         }, 1000);
+    },
+    canBeSubmitted: function() {
+        const form = this.$el.find('form');
+        const formData = form.serializeArray()
+        const btnSubmit = form.find('.js-btn-save');
+        const areFielsdValid =  every(this.errors, (errorText) => {
+            return !!errorText;
+        });
+        const areFieldsFilled = every(formData, (item) => {
+            return item.value;
+        });
+        
+        console.log(areFielsdValid, areFieldsFilled);
+            
+        if (areFielsdValid && areFieldsFilled) {
+            btnSubmit.removeAttr('disabled');
+        } else {
+            btnSubmit.attr('disabled');
+        }
     },
     register: function (e) {
         e.preventDefault();
-        console.log($(e.target).serializeArray());
+        const form = $(e.target);
+        //const formData = $(e.target).serializeArray();
+        //this.validate(formData);
 
     },
     render: function () {
         this.$el.html(this.template);
-        //this.template(this.errors);
         return this.$el;
     },
 });
