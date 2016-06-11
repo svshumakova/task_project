@@ -1,6 +1,6 @@
 import { View } from 'backbone';
+import PopupView from '../Popup/popup';
 import {validateEmail, validatePassword, validationErrors} from '../../helpers/form';
-//import _style from '../../helpers/localStyles'
 import forEach from 'lodash/forEach';
 import find from 'lodash/find';
 import every from 'lodash/every';
@@ -8,24 +8,19 @@ import $ from 'jquery';
 import PopupHTML from "./popup.html";
 window.$ = $;
 const popupTemplate = PopupHTML;
+import { register, validate } from '../../api';
 
-const RegisterPopupView = View.extend({
-    tagName: "div",
-    template: popupTemplate,
+const RegisterPopupView = PopupView.extend({
     initialize: function () {
-        this.promise = new Promise((resolve, reject) => {
-            this.resolve = resolve;
-            this.reject = reject;
-        });
+        PopupView.prototype.initialize.call(this);
         this.render();
         this.timeoutId = null;
         this.errors = {};
     },
-    /*validate: function (formData) {
-
-    },*/
+    tagName: "div",
+    template: popupTemplate,
     events: {
-        "submit .js-register-form": "register",
+        "submit .js-register-form": "validate",
         "input input.form-control": "onChange"
     },
     setErrors: function() {
@@ -74,13 +69,11 @@ const RegisterPopupView = View.extend({
         const formData = form.serializeArray()
         const btnSubmit = form.find('.js-btn-save');
         const areFielsdValid =  every(this.errors, (errorText) => {
-            return !!errorText;
+            return !errorText;
         });
         const areFieldsFilled = every(formData, (item) => {
             return item.value;
         });
-        
-        console.log(areFielsdValid, areFieldsFilled);
             
         if (areFielsdValid && areFieldsFilled) {
             btnSubmit.removeAttr('disabled');
@@ -88,11 +81,26 @@ const RegisterPopupView = View.extend({
             btnSubmit.attr('disabled');
         }
     },
+    validate: function(e) {
+        e.preventDefault();
+        const form = $(e.target);
+        let formData = form.serializeArray();
+        formData = formData.reduce((prev, next) => {
+            return prev = {
+                ...prev,
+                [next.name]: next.value
+            }
+        }, {});
+        validate({email: formData.email}).then((res) => {
+            console.log(res);
+        }, (err) => {
+            console.log(err);
+        })
+    },
     register: function (e) {
         e.preventDefault();
         const form = $(e.target);
-        //const formData = $(e.target).serializeArray();
-        //this.validate(formData);
+        // register();
 
     },
     render: function () {

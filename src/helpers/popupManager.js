@@ -1,13 +1,4 @@
-import RegisterPopupView from "../views/RegisterPopup/popup"; // TODO change path to '../views'
-/*
- class PopupManager {
- openLogin () {
-
- }
- }
-
- export default */
-
+import RegisterPopupView from "../views/RegisterPopup/popup"; // TODO change path to '../views';
 export function openLoginPopup() {
 
 }
