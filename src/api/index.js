@@ -1,6 +1,12 @@
 const mainUrl = 'http://tasks.smartjs.academy';
-export function register() {
-
+export function register(registerData) {
+    return fetch(`${mainUrl}/users`, {
+        method: 'post',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(registerData)
+    })
 }
 
 export function validate(emailObj) {

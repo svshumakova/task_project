@@ -91,17 +91,29 @@ const RegisterPopupView = PopupView.extend({
                 [next.name]: next.value
             }
         }, {});
-        validate({email: formData.email}).then((res) => {
-            console.log(res);
-        }, (err) => {
-            console.log(err);
+        validate({email: formData.email}).then(r =>  r.json()).then((res) => {
+            if (res.errors) {
+                this.errors.general = res.errors.email === 'ALREADY_REGISTERED'
+                ? 'This email has been already registred' : res.errors.email;
+                this.setErrors();
+            }
+            if (res.success) {
+               register({
+                   email: formData.email,
+                   password: formData.password1
+               }).then(res => res.json()).then((res) => {
+                   console.log('res', res);
+                   this.resolve(res);
+                   this.closePopup();
+               },
+               (err) => {
+                   console.log('err', err);
+               });
+            }
+        },
+        (err) => {
+            console.log('err', err);
         })
-    },
-    register: function (e) {
-        e.preventDefault();
-        const form = $(e.target);
-        // register();
-
     },
     render: function () {
         this.$el.html(this.template);

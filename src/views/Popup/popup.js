@@ -9,6 +9,10 @@ const PopupView = View.extend({
             this.reject = reject;
         });
     },
+    closePopup: function () {
+        console.log(this.$el);
+        this.$el.find('.modal').modal('hide');
+    },
     render: function () {
         this.$el.html(this.template);
         return this.$el;

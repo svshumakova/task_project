@@ -2,7 +2,7 @@ import { View } from 'backbone';
 import $ from 'jquery';
 window.$ = $;
 import loginViewHTML from "./loginView.html";
-import { openRegistrationPopup } from "../../helpers/popupManager";
+import { openRegistrationPopup, openLoginPopup } from "../../helpers/popupManager";
 
 const LoginView = View.extend({
     tagName: "div",
@@ -19,7 +19,14 @@ const LoginView = View.extend({
     },
     register: function(e) {
         e.preventDefault();
-        openRegistrationPopup($('body'));
+        openRegistrationPopup($('body')).then((res) => {
+            /* Tmp to ssee data from register request
+            {user: Object, token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6I1…0NDB9.HLgfrIsMBHfHIFYdaSun1NX2a1_CgkMMX9guhDb7vx4"}*/
+            console.log('in view',res);
+            if(res.token) {
+                openLoginPopup();
+            }
+        });
     },
     render: function () {
         this.$el.html(this.template);
