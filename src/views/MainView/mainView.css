@@ -1,0 +1,13 @@
+.main-view{
+    background: url('../../../img/main-bg.jpg') 50% 50% no-repeat;
+    background-size:cover;
+    height:100vh;
+    width:100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-view-inner .btn-main-view{
+    margin: 0 10px;
+}

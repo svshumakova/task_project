@@ -5,7 +5,13 @@ import { Model } from 'backbone';
 // const { Model } = Backbone; // const Model = Backbone.Model;
 
 const User = Model.extend({
-    url: function () { return `http://jsonplaceholder.typicode.com/users/2` },
+    //url: function () { return `http://jsonplaceholder.typicode.com/users/2` },
+    activate: function () {
+        console.log("activate");
+    },
+    deactivate: function() {
+        console.log("deactivate");
+    }
 });
 
 export default User;

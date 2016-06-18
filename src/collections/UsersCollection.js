@@ -1,9 +1,15 @@
 import { Collection } from 'backbone';
 import { User } from '../models/User';
+import { loadUsers } from '../api';
 
 var UserCollection = Collection.extend({
     model: User,
-    url: function () { return `http://jsonplaceholder.typicode.com/todos`}
+
+    fetch: function(collection) {
+        loadUsers().then(result => result.json()).then((result) => {
+            this.set(result);
+        })
+    }
 });
 
-console.log(UserCollection);
+export default UserCollection;

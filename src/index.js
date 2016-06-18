@@ -1,14 +1,28 @@
 import { Router, history } from 'backbone';
-import { LoginView } from './views';
-console.log('index.js');
+import { MainView } from './views';
+import { UserListView } from './views';
+import UsersCollection from './collections/UsersCollection';
+console.log(UsersCollection);
 const AppRouter = Router.extend({
     routes: {
-        "login": "showLoginPage",
+        "main": "showMainPage",
+        "users": "showUsersPage",
     },
 
-    showLoginPage: function() {
+    showMainPage: function() {
         const $el = $('#page');
-        const view = new LoginView();
+        const view = new MainView();
+        console.log('view', view);
+        $el.append(view.render());
+    },
+
+    showUsersPage: function() {
+        const $el = $('#page');
+        const userCollection = new UsersCollection();
+        userCollection.fetch(userCollection);
+
+        console.log(userCollection);
+        const view = new UserListView({collection: userCollection});
         console.log('view', view);
         $el.append(view.render());
     }
